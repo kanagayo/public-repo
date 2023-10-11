@@ -1,0 +1,27 @@
+# .github/workflows/create_pr.yml
+
+name: Create PR on Public Repo
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  create-pr:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      with:
+        token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+
+    - name: Create Pull Request
+      uses: repo-sync/pull-request@v2
+      with:
+        source_branch: "master"
+        destination_branch: "master"
+        pr_title: "Update from private repository"
+        pr_body: "This PR updates the public repository with the latest changes from the private repository."
+        github_token: ${{ secrets.PUBLIC_REPO_TOKEN }}
