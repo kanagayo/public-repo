@@ -30,7 +30,7 @@ jobs:
 
     - name: Merge public repository changes
       run: |
-        git merge public/main
+        git merge public/main --allow-unrelated-histories
 
     - name: Push to Public Repository
       run: |
