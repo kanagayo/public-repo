@@ -1,0 +1,47 @@
+# .github/workflows/create_pr.yml
+
+name: Create PR on Public Repo
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  create-pr:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      with:
+        token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+        ref: 'main'
+
+    - name: Set up Git
+      run: |
+        git config user.name "kanagayo"
+        git config user.email "kanagayo@microsoft.com"
+    
+    - name: Fetch public repository
+      run: |
+        git remote add public https://github.com/kanagayo/public-repo.git
+        git fetch public
+
+    - name: Merge public repository changes
+      run: |
+        git merge public/main --allow-unrelated-histories
+
+    - name: Push to Public Repository
+      run: |
+        git remote add public https://github.com/kanagayo/public-repo.git
+        git push public main:create-pr-branch
+
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v3
+      with:
+        token: ${{ secrets.PUBLIC_REPO_TOKEN }}
+        title: "Update from private repository"
+        body: "This PR updates the public repository with the latest changes from the private repository."
+        base: 'main'
+        head: 'create-pr-branch'
