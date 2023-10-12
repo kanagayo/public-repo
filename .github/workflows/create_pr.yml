@@ -22,6 +22,15 @@ jobs:
       run: |
         git config user.name "kanagayo"
         git config user.email "kanagayo@microsoft.com"
+    
+    - name: Fetch public repository
+      run: |
+        git remote add public https://github.com/kanagayo/public-repo.git
+        git fetch public
+
+    - name: Merge public repository changes
+      run: |
+        git merge public/main
 
     - name: Push to Public Repository
       run: |
